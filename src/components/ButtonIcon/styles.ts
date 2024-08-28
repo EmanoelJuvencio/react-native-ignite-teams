@@ -3,9 +3,9 @@ import styled from 'styled-components/native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { DefaultTheme } from 'styled-components/native/dist/types'
 
-export type TButtonIconTypeStyleProps = 'PRIMARY' | 'SECONDARY'
+type TButtonIconTypeStyleProps = 'PRIMARY' | 'SECONDARY'
 
-export type TIconsGliphName = keyof typeof MaterialIcons.glyphMap
+type TIconsGliphName = keyof typeof MaterialIcons.glyphMap
 
 export type TButtonIconProps = TouchableOpacityProps & {
   icon?: TIconsGliphName
