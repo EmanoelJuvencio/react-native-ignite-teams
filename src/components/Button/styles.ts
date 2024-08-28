@@ -11,7 +11,6 @@ export const Container = styled(TouchableOpacity)<TButtonProps>`
   flex: 1;
   min-height: 56px;
   max-height: 56px;
-  margin-top: 10px;
   border-radius: 6px;
   justify-content: center;
   align-items: center;
