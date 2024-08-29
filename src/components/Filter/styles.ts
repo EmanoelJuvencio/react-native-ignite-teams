@@ -1,8 +1,8 @@
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { css } from 'styled-components/native'
 import styled from 'styled-components/native'
 
-export type TFilterStyleProps = {
+export type TFilterStyleProps = TouchableOpacityProps & {
   isActive?: boolean
 }
 

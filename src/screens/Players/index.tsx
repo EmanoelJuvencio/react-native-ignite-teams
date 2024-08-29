@@ -1,13 +1,16 @@
 import { Header } from '@components/Header'
-import { Container, Form } from './styles'
+import { Container, Form, HeaderList, NumbersOfPlayers } from './styles'
 import { Highlight } from '@components/Highlight'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { Input } from '@components/Input'
 import { Filter } from '@components/Filter'
-import { View } from 'react-native'
-import { Rows } from 'phosphor-react-native'
+import { FlatList } from 'react-native'
+import { useState } from 'react'
 
 export function Players() {
+  const [team, setTeam] = useState('Time A')
+  const [players, setPlayers] = useState(['Emanoel', 'Teste', 'ABC'])
+
   return (
     <Container>
       <Header showBackButton />
@@ -25,7 +28,22 @@ export function Players() {
         <ButtonIcon icon='add' type='PRIMARY' />
       </Form>
 
-      <Filter title='Time A' isActive />
+      <HeaderList>
+        <FlatList
+          data={['Time A', 'Time B']}
+          keyExtractor={(item) => item}
+          horizontal
+          renderItem={({ item }) => (
+            <Filter
+              title={item}
+              isActive={item === team}
+              onPress={() => setTeam(item)}
+            />
+          )}
+        />
+
+        <NumbersOfPlayers>{players.length}</NumbersOfPlayers>
+      </HeaderList>
     </Container>
   )
 }
