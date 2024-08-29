@@ -24,7 +24,7 @@ export const HeaderList = styled.View`
   flex-direction: row;
 `
 
-export const NumbersOfPlayers = styled.Text`
+export const NumberOfPlayers = styled.Text`
   ${({ theme }) => css`
     color: ${theme.COLORS.GRAY_200};
     font-family: ${theme.FONT_FAMILY.BOLD};
