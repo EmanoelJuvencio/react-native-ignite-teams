@@ -1,13 +1,18 @@
 import { useState } from 'react'
+import { FlatList } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+
 import { Header } from '@components/Header'
 import { Highlight } from '@components/Highlight'
 import { GroupCard } from '@components/GroupCard'
-import { Container } from './styles'
-import { FlatList } from 'react-native'
 import { ListEmpty } from '@components/ListEmpty'
 import { Button } from '@components/Button'
 
+import { Container } from './styles'
+
 export function Groups() {
+  const navigation = useNavigation()
+
   const [groups, setGroups] = useState<string[]>([
     'Galera da Rocket',
     'Turma A',
@@ -17,6 +22,10 @@ export function Groups() {
     'Turma E',
     'Turma F',
   ])
+
+  function handleNewGroup() {
+    navigation.navigate('new')
+  }
 
   return (
     <Container>
@@ -33,7 +42,11 @@ export function Groups() {
         }
       />
 
-      <Button title='Cadastrar Turma' onPress={(e) => console.log(e)} />
+      <Button
+        title='Cadastrar Turma'
+        style={{ marginTop: 20 }}
+        onPress={() => handleNewGroup()}
+      />
     </Container>
   )
 }

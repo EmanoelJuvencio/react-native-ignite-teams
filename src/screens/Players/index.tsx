@@ -1,5 +1,6 @@
-import { FlatList } from 'react-native'
 import { useState } from 'react'
+import { FlatList } from 'react-native'
+// import { useNavigation } from '@react-navigation/native'
 
 import { Header } from '@components/Header'
 import { Highlight } from '@components/Highlight'
@@ -11,9 +12,17 @@ import { ListEmpty } from '@components/ListEmpty'
 import { Button } from '@components/Button'
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles'
+import { useRoute } from '@react-navigation/native'
+
+type TRouteParams = {
+  group: string
+}
 
 export function Players() {
   const [team, setTeam] = useState('Time A')
+  const route = useRoute()
+  const { group } = route.params as TRouteParams
+
   const [players, setPlayers] = useState([
     'Emanoel',
     'Ana',
@@ -29,10 +38,7 @@ export function Players() {
   return (
     <Container>
       <Header showBackButton />
-      <Highlight
-        title='Nome da Turma'
-        subtitle='Adicione a galera e separe os times'
-      />
+      <Highlight title={group} subtitle='Adicione a galera e separe os times' />
       <Form>
         <Input
           placeholder='Nome da Pessoa'
@@ -88,7 +94,7 @@ export function Players() {
       <Button
         title='Remover Turma'
         type='SECONDARY'
-        style={{ marginTop: 10 }}
+        style={{ marginTop: 20 }}
         onPress={() => console.log('Clicou Para Remover Turma')}
       />
     </Container>
