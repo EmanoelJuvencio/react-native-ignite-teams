@@ -12,7 +12,8 @@ import { ListEmpty } from '@components/ListEmpty'
 import { Button } from '@components/Button'
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { groupRemove } from '@storage/group/groupRemove'
 
 type TRouteParams = {
   group: string
@@ -22,6 +23,8 @@ export function Players() {
   const [team, setTeam] = useState('Time A')
   const route = useRoute()
   const { group } = route.params as TRouteParams
+
+  const navigation = useNavigation()
 
   const [players, setPlayers] = useState([
     'Emanoel',
@@ -34,6 +37,15 @@ export function Players() {
     'Teste 2',
     'Teste 3',
   ])
+
+  async function handleGroupRemove(item: string) {
+    try {
+      await groupRemove(item)
+      navigation.navigate('groups')
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <Container>
@@ -95,7 +107,7 @@ export function Players() {
         title='Remover Turma'
         type='SECONDARY'
         style={{ marginTop: 20 }}
-        onPress={() => console.log('Clicou Para Remover Turma')}
+        onPress={() => handleGroupRemove(group)}
       />
     </Container>
   )
