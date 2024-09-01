@@ -30,7 +30,7 @@ export function Groups() {
     navigation.navigate('new')
   }
 
-  function handleNavigatePlayers(group: string) {
+  function handleOpenGroup(group: string) {
     navigation.navigate('players', { group })
   }
 
@@ -49,7 +49,7 @@ export function Groups() {
         data={groups}
         keyExtractor={(item) => item}
         renderItem={({ item }) => (
-          <GroupCard title={item} onPress={() => handleNavigatePlayers(item)} />
+          <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
         )}
         contentContainerStyle={groups.length === 0 && { flex: 1 }}
         ListEmptyComponent={
