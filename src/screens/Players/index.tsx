@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Alert, FlatList, Keyboard } from 'react-native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { AppError } from '@utils/AppError'
 
@@ -18,11 +19,6 @@ import { ListEmpty } from '@components/ListEmpty'
 import { Button } from '@components/Button'
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles'
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native'
 
 type TRouteParams = {
   group: string
@@ -79,11 +75,9 @@ export function Players() {
     }
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchPlayersByTeam()
-    }, [players, team])
-  )
+  useEffect(() => {
+    fetchPlayersByTeam()
+  }, [players, team])
 
   return (
     <Container>
