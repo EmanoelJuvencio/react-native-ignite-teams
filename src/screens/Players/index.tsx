@@ -1,6 +1,12 @@
-import { useState } from 'react'
-import { FlatList } from 'react-native'
-// import { useNavigation } from '@react-navigation/native'
+import { useCallback, useState } from 'react'
+import { Alert, FlatList, Keyboard } from 'react-native'
+
+import { AppError } from '@utils/AppError'
+
+import { TPlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
+import { playerAddByGroup } from '@storage/player/PlayerAddByGroup'
+import { playersGetByGroupAndTeam } from '@storage/player/playersGetByGroupAndTeam'
+import { groupRemove } from '@storage/group/groupRemove'
 
 import { Header } from '@components/Header'
 import { Highlight } from '@components/Highlight'
@@ -12,8 +18,11 @@ import { ListEmpty } from '@components/ListEmpty'
 import { Button } from '@components/Button'
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import { groupRemove } from '@storage/group/groupRemove'
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native'
 
 type TRouteParams = {
   group: string
@@ -25,18 +34,8 @@ export function Players() {
   const { group } = route.params as TRouteParams
 
   const navigation = useNavigation()
-
-  const [players, setPlayers] = useState([
-    'Emanoel',
-    'Ana',
-    'Leonardo',
-    'Mayco',
-    'Gobo',
-    'Barzon',
-    'Teste',
-    'Teste 2',
-    'Teste 3',
-  ])
+  const [newPlayerName, setNewPlayerName] = useState('')
+  const [players, setPlayers] = useState<TPlayerStorageDTO[]>([])
 
   async function handleGroupRemove(item: string) {
     try {
@@ -47,6 +46,45 @@ export function Players() {
     }
   }
 
+  async function handleAddPlayer() {
+    try {
+      if (newPlayerName.trim().length === 0) {
+        return Alert.alert('Nova Pessoa', 'Informe o nome do jogador.')
+      }
+
+      const newPlayer: TPlayerStorageDTO = {
+        name: newPlayerName,
+        team,
+      }
+
+      await playerAddByGroup(newPlayer, group)
+      setNewPlayerName('')
+      Keyboard.dismiss()
+    } catch (error) {
+      if (error instanceof AppError) {
+        return Alert.alert('Nova Pessoa', error.message)
+      }
+
+      Alert.alert('Nova Pessoa', 'Não foi possível adicionar um novo jogador.')
+      console.log(error)
+    }
+  }
+
+  async function fetchPlayersByTeam() {
+    try {
+      const data = await playersGetByGroupAndTeam(group, team)
+      setPlayers(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPlayersByTeam()
+    }, [players, team])
+  )
+
   return (
     <Container>
       <Header showBackButton />
@@ -56,11 +94,13 @@ export function Players() {
           placeholder='Nome da Pessoa'
           autoCorrect={false}
           keyboardAppearance='dark'
+          value={newPlayerName}
+          onChangeText={setNewPlayerName}
         />
         <ButtonIcon
           icon='add'
           type='PRIMARY'
-          onPress={() => console.log('Clicou para ADD uma pessoa')}
+          onPress={() => handleAddPlayer()}
         />
       </Form>
       <HeaderList>
@@ -73,8 +113,6 @@ export function Players() {
               title={item}
               isActive={item === team}
               onPress={() => {
-                console.log('Clicou Para mudar para o =>', item)
-
                 setTeam(item)
               }}
             />
@@ -86,11 +124,11 @@ export function Players() {
 
       <FlatList
         data={players}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.name}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <PlayerCard
-            name={item}
+            name={item.name}
             onRemove={() => console.log('Clicou para remover => ', item)}
           />
         )}
