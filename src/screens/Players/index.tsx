@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
-import { Alert, FlatList, Keyboard } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Alert, FlatList, TextInput } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { AppError } from '@utils/AppError'
 
 import { TPlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
-import { playerAddByGroup } from '@storage/player/PlayerAddByGroup'
+import { playerAddByGroup } from '@storage/player/playerAddByGroup'
 import { playersGetByGroupAndTeam } from '@storage/player/playersGetByGroupAndTeam'
 import { groupRemove } from '@storage/group/groupRemove'
 
@@ -25,13 +25,16 @@ type TRouteParams = {
 }
 
 export function Players() {
-  const [team, setTeam] = useState('Time A')
   const route = useRoute()
   const { group } = route.params as TRouteParams
 
   const navigation = useNavigation()
+
+  const [team, setTeam] = useState('Time A')
   const [newPlayerName, setNewPlayerName] = useState('')
   const [players, setPlayers] = useState<TPlayerStorageDTO[]>([])
+
+  const newPlayerNameInputRef = useRef<TextInput>(null)
 
   async function handleGroupRemove(item: string) {
     try {
@@ -54,8 +57,8 @@ export function Players() {
       }
 
       await playerAddByGroup(newPlayer, group)
+      newPlayerNameInputRef?.current?.blur()
       setNewPlayerName('')
-      Keyboard.dismiss()
     } catch (error) {
       if (error instanceof AppError) {
         return Alert.alert('Nova Pessoa', error.message)
@@ -90,6 +93,9 @@ export function Players() {
           keyboardAppearance='dark'
           value={newPlayerName}
           onChangeText={setNewPlayerName}
+          inputRef={newPlayerNameInputRef}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType='done'
         />
         <ButtonIcon
           icon='add'
