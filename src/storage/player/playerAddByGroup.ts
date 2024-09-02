@@ -19,7 +19,7 @@ export async function playerAddByGroup(
 
     if (playerAlreadyExists.length > 0) {
       throw new AppError(
-        'Esta pessoa já foi adicionado em um time deste grupo.'
+        'Esta pessoa já foi adicionado em um time desta Turma.'
       )
     }
 
