@@ -7,7 +7,7 @@ import { AppError } from '@utils/AppError'
 import { TPlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
 import { playerAddByGroup } from '@storage/player/playerAddByGroup'
 import { playersGetByGroupAndTeam } from '@storage/player/playersGetByGroupAndTeam'
-import { groupRemove } from '@storage/group/groupRemove'
+import { groupRemoveByName } from '@storage/group/groupRemoveByName'
 import { playerRemoveByGroup } from '@storage/player/playerRemoveByGroup'
 
 import { Header } from '@components/Header'
@@ -61,7 +61,7 @@ export function Players() {
     }
   }
 
-  async function handleRemovePlayer(playerName: string) {
+  async function handlePlayerRemove(playerName: string) {
     try {
       await playerRemoveByGroup(playerName, group)
     } catch (error) {
@@ -70,9 +70,21 @@ export function Players() {
     }
   }
 
-  async function handleRemoveGroup() {
+  async function handleGroupRemove() {
+    Alert.alert('Remover Grupo', 'Deseja Remover o Grupo?', [
+      { text: 'Não', style: 'cancel' },
+      {
+        text: 'Sim',
+        onPress: () => {
+          groupRemove()
+        },
+      },
+    ])
+  }
+
+  async function groupRemove() {
     try {
-      await groupRemove(group)
+      await groupRemoveByName(group)
       navigation.navigate('groups')
     } catch (error) {
       console.log(error)
@@ -140,7 +152,7 @@ export function Players() {
         renderItem={({ item }) => (
           <PlayerCard
             name={item.name}
-            onRemove={() => handleRemovePlayer(item.name)}
+            onRemove={() => handlePlayerRemove(item.name)}
           />
         )}
         ListEmptyComponent={() => (
@@ -156,7 +168,7 @@ export function Players() {
         title='Remover Turma'
         type='SECONDARY'
         style={{ marginTop: 20 }}
-        onPress={() => handleRemoveGroup()}
+        onPress={() => handleGroupRemove()}
       />
     </Container>
   )
