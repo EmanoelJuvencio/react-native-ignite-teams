@@ -8,6 +8,7 @@ import { TPlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
 import { playerAddByGroup } from '@storage/player/playerAddByGroup'
 import { playersGetByGroupAndTeam } from '@storage/player/playersGetByGroupAndTeam'
 import { groupRemove } from '@storage/group/groupRemove'
+import { playerRemoveByGroup } from '@storage/player/playerRemoveByGroup'
 
 import { Header } from '@components/Header'
 import { Highlight } from '@components/Highlight'
@@ -36,15 +37,6 @@ export function Players() {
 
   const newPlayerNameInputRef = useRef<TextInput>(null)
 
-  async function handleGroupRemove(item: string) {
-    try {
-      await groupRemove(item)
-      navigation.navigate('groups')
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   async function handleAddPlayer() {
     try {
       if (newPlayerName.trim().length === 0) {
@@ -69,12 +61,31 @@ export function Players() {
     }
   }
 
+  async function handleRemovePlayer(playerName: string) {
+    try {
+      await playerRemoveByGroup(playerName, group)
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Remover Pessoa', 'Não foi possível remover esta pessoa.')
+    }
+  }
+
+  async function handleRemoveGroup() {
+    try {
+      await groupRemove(group)
+      navigation.navigate('groups')
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Remover Grupo', 'Não foi possível remover este grupo.')
+    }
+  }
+
   async function fetchPlayersByTeam() {
     try {
       const data = await playersGetByGroupAndTeam(group, team)
       setPlayers(data)
     } catch (error) {
-      console.error(error)
+      console.log(error)
     }
   }
 
@@ -129,7 +140,7 @@ export function Players() {
         renderItem={({ item }) => (
           <PlayerCard
             name={item.name}
-            onRemove={() => console.log('Clicou para remover => ', item)}
+            onRemove={() => handleRemovePlayer(item.name)}
           />
         )}
         ListEmptyComponent={() => (
@@ -145,7 +156,7 @@ export function Players() {
         title='Remover Turma'
         type='SECONDARY'
         style={{ marginTop: 20 }}
-        onPress={() => handleGroupRemove(group)}
+        onPress={() => handleRemoveGroup()}
       />
     </Container>
   )

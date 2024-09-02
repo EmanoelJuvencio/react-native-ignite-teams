@@ -22,7 +22,7 @@ export function Groups() {
       const data = await groupsGetAll()
       setGroups(data)
     } catch (error) {
-      console.error(error)
+      console.log(error)
     }
   }
 
